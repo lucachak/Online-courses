@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Course Platform{% endblock %}
+
+{% block content %}
+<div class="relative min-h-[400px] flex items-center justify-center overflow-hidden pt-16 md:pt-24">
+    {% if course.background_image %}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ course.background_image.url }}" alt="{{ course.title }}" 
+                 class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-blue-900/80 to-indigo-900/80"></div>
+        </div>
+    {% else %}
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
+    {% endif %}
+    
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center text-white py-20">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">{{ course.title }}</h1>
+        <p class="text-xl mb-8 text-gray-200">{{ course.short_description|default:course.description }}</p>
+        
+        {% if not is_enrolled %}
+
+        
+            <a href="{% url 'payments:checkout' course.slug %}" 
+               class="inline-block bg-blue-500 text-white px-8 py-4 rounded-lg hover:from-green-600 hover:to-emerald-700 transition shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-lg">
+                <span class="flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    Enroll Now - ${{ course.price }}
+                </span>
+            </a>
+            <p class="mt-4 text-sm text-gray-300">Secure payment powered by Stripe</p>
+        {% else %}
+            <div class="inline-flex items-center bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                You are enrolled in this course
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-md p-8 mb-8 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-2xl font-bold mb-4 dark:text-white">Course Description</h2>
+                <p class="text-gray-700 leading-relaxed dark:text-white">{{ course.description }}</p>
+            </div>
+            
+            <!-- Course Modules -->
+            <div class="bg-white rounded-lg shadow-md p-8 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Course Content</h2>
+                
+                {% if not is_enrolled %}
+                    <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                        <p class="text-yellow-800 dark:text-yellow-200 text-sm flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            Enroll in this course to access all lessons and materials
+                        </p>
+                    </div>
+                {% endif %}
+                
+                <div class="space-y-6">
+                    {% for module in modules %}
+                        <div class="border-l-4 border-purple-500 pl-4 dark:border-purple-400">
+                            <h3 class="text-xl font-bold mb-2 dark:text-white">{{ module.title }}</h3>
+                            {% if module.description %}
+                                <p class="text-gray-600 mb-4 dark:text-white text-sm">{{ module.description }}</p>
+                            {% endif %}
+                            
+                            <div class="space-y-2">
+                                {% for lesson in module.lessons.all %}
+                                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded-lg {% if not is_enrolled %}opacity-60{% endif %}">
+                                        <div class="flex items-center space-x-3">
+                                            {% if not is_enrolled %}
+                                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                                </svg>
+                                            {% else %}
+                                                <span class="text-purple-600 font-bold dark:text-white">{{ lesson.order }}</span>
+                                            {% endif %}
+                                            <span class="text-gray-700 dark:text-white">{{ lesson.title }}</span>
+                                            <span class="text-xs bg-gray-200 px-2 py-1 rounded dark:bg-blue-500 dark:border-gray-600 border border-gray-200 rounded-lg">
+                                                {{ lesson.lesson_type }}
+                                            </span>
+                                        </div>
+                                        <span class="text-sm text-gray-500 dark:text-white">{{ lesson.duration_minutes }} min</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-gray-500 dark:text-white">No modules available yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-md p-6 sticky top-20 dark:bg-gray-800 dark:text-white">
+                <div class="mb-6">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" 
+                             class="w-full rounded-lg mb-4">
+                    {% endif %}
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-white">Level:</span>
+                            <span class="font-semibold capitalize">{{ course.level }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-white">Duration:</span>
+                            <span class="font-semibold dark:text-white">{{ course.duration_hours }} hours</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-white">Price:</span>
+                            <span class="font-semibold text-2xl text-purple-600 dark:text-white">${{ course.price }}</span>
+                        </div>
+                        {% if course.category %}
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-white">Category:</span>
+                                <span class="font-semibold dark:text-white">{{ course.category.name }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if not is_enrolled %}
+                    <a href="{% url 'payments:checkout' course.slug %}" 
+                       class="block w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-center mb-4">
+                        Enroll Now
+                    </a>
+                    <p class="text-xs text-center text-gray-500 dark:text-gray-400 mb-4">30-day money-back guarantee</p>
+                {% endif %}
+                
+                <div class="border-t pt-4">
+                    <h3 class="font-bold mb-2 dark:text-white">Instructor</h3>
+                    <div class="flex items-center space-x-3">
+                        {% if course.instructor.profile_picture %}
+                            <img src="{{ course.instructor.profile_picture.url }}" 
+                                 alt="{{ course.instructor.get_full_name }}" 
+                                 class="w-12 h-12 rounded-full">
+                        {% endif %}
+                        <div>
+                            <p class="font-semibold dark:text-white">{{ course.instructor.get_full_name|default:course.instructor.username }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ course.instructor.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Courses -->
+    {% if related_courses %}
+        <div class="mt-12">
+            <h2 class="text-3xl font-bold mb-8 dark:text-white">Related Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for related_course in related_courses %}
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                        {% if related_course.thumbnail %}
+                            <img src="{{ related_course.thumbnail.url }}" alt="{{ related_course.title }}" 
+                                 class="w-full h-40 object-cover">
+                        {% endif %}
+                        <div class="p-4">
+                            <h3 class="font-bold mb-2 dark:text-white">{{ related_course.title }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">${{ related_course.price }}</p>
+                            <a href="{% url 'course_detail' related_course.slug %}" 
+                               class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold text-sm">
+                                View Course →
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+  "name": "course-platform-theme",
+  "version": "1.0.0",
+  "description": "Tailwind CSS theme for Course Platform",
+  "scripts": {
+    "start": "tailwindcss -i ./src/input.css -o ../static/css/dist.css --watch",
+    "build": "tailwindcss -i ./src/input.css -o ../static/css/dist.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ../static/css/dist.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

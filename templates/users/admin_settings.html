@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Settings - Course Platform{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2 dark:text-white">Admin Settings</h1>
+        <p class="text-gray-600 dark:text-white">Manage your admin profile and platform statistics</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Settings Form -->
+        <div class="lg:col-span-2">
+            <div class="dark:bg-gray-800 dark:text-white bg-white rounded-lg shadow-md overflow-hidden">
+                <form method="post" enctype="multipart/form-data" class="p-6 space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Profile Picture -->
+                    <div class="flex items-center space-x-6">
+                        <div class="flex-shrink-0">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" 
+                                     class="w-24 h-24 rounded-full object-cover border-4 border-indigo-100">
+                            {% else %}
+                                <div class="w-24 h-24 rounded-full bg-indigo-600 flex items-center justify-center border-4 border-indigo-100">
+                                    <span class="text-white text-2xl font-bold">{{ user.username|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="profile_picture" class="block text-sm font-medium text-gray-700 mb-2">
+                                Profile Picture
+                            </label>
+                            <input type="file" 
+                                   id="profile_picture" 
+                                   name="profile_picture" 
+                                   accept="image/*"
+                                   class="
+                                   block
+                                   w-full
+                                   text-sm 
+                                   text-gray-500 
+                                   file:mr-4 
+                                   file:py-2 
+                                   file:px-4 
+                                   file:rounded-lg 
+                                   file:border-0 
+                                   file:text-sm 
+                                   file:font-semibold 
+                                   file:bg-indigo-50 
+                                   file:text-indigo-700 
+                                   hover:file:bg-indigo-100 
+                                   dark:file:bg-indigo-900/30 
+                                   dark:file:text-indigo-400 
+                                   rounded-lg
+                                   dark:text-white
+                                   ">
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first_name" class="
+                            dark:text-white
+                            block text-sm font-medium text-gray-700 mb-2">
+                                First Name
+                            </label>
+                            <input type="text" 
+                                   id="first_name" 
+                                   name="first_name" 
+                                   value="{{ user.first_name }}"
+                                   class="
+                                   dark:bg-gray-700 dark:text-white
+                                   w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="last_name" class="dark:text-white block text-sm font-medium text-gray-700 mb-2">
+                                Last Name
+                            </label>
+                            <input type="text" 
+                                   id="last_name" 
+                                   name="last_name" 
+                                   value="{{ user.last_name }}"
+                                   class=" dark:bg-gray-700 dark:text-white
+                                   w-full px-4 py-2 border border-gray-300 
+                                   dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
+                            Email Address
+                        </label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               value="{{ user.email }}"
+                               required
+                               class="dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600
+                               w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
+                            Bio
+                        </label>
+                        <textarea id="bio" 
+                                  name="bio" 
+                                  rows="4"
+                                  class=" dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600
+                                  w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">{{ user.bio }}</textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <a href="{% url 'home' %}" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-white hover:bg-gray-50 transition font-medium">
+                            Cancel
+                        </a>
+                        <button type="submit" class="px-6 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar - Statistics -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Platform Statistics -->
+            <div class="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800 dark:text-white">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-white">Platform Statistics</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-indigo-50 rounded-lg dark:bg-indigo-900">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-white">Total Courses</p>
+                            <p class="text-2xl font-bold text-indigo-600 dark:text-white">{{ total_courses }}</p>
+                        </div>
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg dark:bg-green-900">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-white">Published</p>
+                            <p class="text-2xl font-bold text-green-600 dark:text-white">{{ published_courses }}</p>
+                        </div>
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-purple-50 rounded-lg dark:bg-purple-900 dark:text-white">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-white">Total Students</p>
+                            <p class="text-2xl font-bold text-purple-600 dark:text-white">{{ total_students }}</p>
+                        </div>
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg dark:bg-yellow-900 dark:text-white">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-white">Instructors</p>
+                            <p class="text-2xl font-bold text-yellow-600 dark:text-white">{{ total_instructors }}</p>
+                        </div>
+                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg dark:bg-blue-900 dark:text-white">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-white">Enrollments</p>
+                            <p class="text-2xl font-bold text-blue-600 dark:text-white">{{ total_enrollments }}</p>
+                        </div>
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800 dark:text-white">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-white">Quick Actions</h3>
+                <div class="space-y-2">
+                    <a href="/admin/" class="block w-full px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 transition font-semibold text-center">
+                        Django Admin
+                    </a>
+                    <a href="/admin/courses/course/" class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white rounded-lg hover:bg-gray-50 transition font-medium text-center">
+                        Manage Courses
+                    </a>
+                    <a href="/admin/users/user/" class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white rounded-lg hover:bg-gray-50 transition font-medium text-center">
+                        Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

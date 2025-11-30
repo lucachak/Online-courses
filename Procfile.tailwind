@@ -1,0 +1,2 @@
+django: bash -c 'python manage.py runserver $(./helpers/get_ip.sh):8000'
+tailwind: python manage.py tailwind start
