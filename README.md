@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Online-courses
 =======
 # Django Course Platform
