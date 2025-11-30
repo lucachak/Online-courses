@@ -177,9 +177,4 @@ This watches for changes and rebuilds CSS automatically.
 6. Configure web server (nginx/Apache)
 7. Use Gunicorn or uWSGI for WSGI
 
-## License
-
-MIT License
-
->>>>>>> 5d962da (Starting point)
 # Online-courses
